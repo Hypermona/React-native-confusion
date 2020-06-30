@@ -6,6 +6,8 @@ import Dishdetail from "./DishdetailComponent";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import AboutUs from "./AboutComponent";
+import ContactUs from "./ContactComponents";
 
 function StackNav() {
   const Stack = createStackNavigator();
@@ -51,11 +53,27 @@ function DrawerNav() {
         }}
       />
       <Drawer.Screen
+        name="AboutUs"
+        component={AboutUs}
+        options={{
+          title: "About us",
+          drawerLabel: "About us",
+        }}
+      />
+      <Drawer.Screen
         name="Menu"
         component={StackNav}
         options={{
           title: "Menu",
           drawerLabel: "Menu",
+        }}
+      />
+      <Drawer.Screen
+        name="ContactUs"
+        component={ContactUs}
+        options={{
+          title: "Contact us",
+          drawerLabel: "Contact us",
         }}
       />
     </Drawer.Navigator>
@@ -68,7 +86,9 @@ class Main extends Component {
         style={{
           flex: 1,
           paddingTop:
-            Platform.OS === "ios" ? 0 : Expo.Constants.statusBarHeight,
+            Platform.OS === "ios" || Platform.OS === "web"
+              ? 0
+              : Expo.Constants.statusBarHeight,
         }}
       >
         <NavigationContainer>
