@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View } from "react-native";
+import { View, Platform } from "react-native";
 import Menu from "./MenuComponent";
 import Home from "./HomeComponent";
 import Dishdetail from "./DishdetailComponent";
@@ -64,9 +64,17 @@ function DrawerNav() {
 class Main extends Component {
   render() {
     return (
-      <NavigationContainer>
-        <DrawerNav />
-      </NavigationContainer>
+      <View
+        style={{
+          flex: 1,
+          paddingTop:
+            Platform.OS === "ios" ? 0 : Expo.Constants.statusBarHeight,
+        }}
+      >
+        <NavigationContainer>
+          <DrawerNav />
+        </NavigationContainer>
+      </View>
     );
   }
 }
