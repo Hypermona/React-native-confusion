@@ -1,8 +1,15 @@
 import React, { Component } from "react";
 import { View, Text, FlatList } from "react-native";
 import { Card, ListItem } from "react-native-elements";
-import { LEADERS } from "../shared/leaders";
 import { ScrollView } from "react-native-gesture-handler";
+import { connect } from "react-redux";
+import { baseUrl } from "../shared/baseUrl";
+
+const mapStateToProps = (state) => {
+  return {
+    leaders: state.leaders,
+  };
+};
 
 function History() {
   return (
@@ -24,14 +31,7 @@ function History() {
   );
 }
 
-export default class AboutUs extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      leaders: LEADERS,
-    };
-  }
-
+class AboutUs extends Component {
   render() {
     const renderLeaders = ({ item, index }) => {
       if (item) {
@@ -41,7 +41,7 @@ export default class AboutUs extends Component {
             title={item.name}
             subtitle={item.description}
             hideChevron={true}
-            leftAvatar={{ source: require("./images/alberto.png") }}
+            leftAvatar={{ source: { uri: baseUrl + item.image } }}
           />
         );
       } else {
@@ -54,7 +54,7 @@ export default class AboutUs extends Component {
         <History />
         <Card title="Corporate Leaders">
           <FlatList
-            data={this.state.leaders}
+            data={this.props.leaders.leaders}
             renderItem={renderLeaders}
             keyExtractor={(item) => item.id.toString()}
           />
@@ -63,3 +63,4 @@ export default class AboutUs extends Component {
     );
   }
 }
+export default connect(mapStateToProps)(AboutUs);
