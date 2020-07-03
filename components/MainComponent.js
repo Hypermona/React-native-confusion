@@ -27,6 +27,7 @@ import {
   fetchPromos,
   fetchLeaders,
 } from "../redux/ActionCreators";
+import Reservation from "./ReservationComponent";
 
 const mapStateToProps = (state) => {
   return {
@@ -187,6 +188,41 @@ function StackNavContact() {
     </Stack.Navigator>
   );
 }
+function StackNavReserve() {
+  const Stack = createStackNavigator();
+  return (
+    <Stack.Navigator
+      initialRouteName="Home"
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: "#512DA8",
+        },
+        headerTintColor: "#fff",
+        headerTitleStyle: {
+          color: "#fff",
+        },
+      }}
+    >
+      <Stack.Screen
+        name="Reservation"
+        component={Reservation}
+        options={({ navigation }) => ({
+          headerLeft: () => (
+            <Icon
+              raised
+              reverse
+              name="menu"
+              size={24}
+              color="#512DA8"
+              onPress={() => navigation.toggleDrawer()}
+            />
+          ),
+        })}
+      />
+    </Stack.Navigator>
+  );
+}
+
 function DrawerNav() {
   const Drawer = createDrawerNavigator();
   return (
@@ -246,6 +282,22 @@ function DrawerNav() {
               name="address-card"
               type="font-awesome"
               size={22}
+              color={tintColor}
+            />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Reservation"
+        component={StackNavReserve}
+        options={{
+          title: "Reservation",
+          drawerLabel: "Reservation",
+          drawerIcon: ({ tintColor, focused }) => (
+            <Icon
+              name="cutlery"
+              type="font-awesome"
+              size={24}
               color={tintColor}
             />
           ),
