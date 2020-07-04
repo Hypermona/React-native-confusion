@@ -7,6 +7,7 @@ import {
   Picker,
   Switch,
   Button,
+  Modal,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
@@ -19,28 +20,29 @@ class Reservation extends Component {
       smoking: false,
       date: new Date(),
       show: false,
+      showModal: false,
     };
+  }
+  toggleModal() {
+    this.setState({ showModal: !this.state.showModal });
   }
 
   handleReservation() {
-    alert(
-      "Guests: " +
-        this.state.guests +
-        "\n Smoking: " +
-        this.state.smoking +
-        "\n" +
-        "Date and Time: " +
-        this.state.date
-    );
+    console.log(JSON.stringify(this.state));
+    this.toggleModal();
+    this.setState({
+      show: false,
+    });
+  }
+  resetForm() {
     this.setState({
       guests: 1,
       smoking: false,
       date: new Date(),
-      show: false,
       mode: "date",
+      show: false,
     });
   }
-
   render() {
     const { date } = this.state;
     return (
@@ -74,10 +76,20 @@ class Reservation extends Component {
         <View style={styles.formRow}>
           <Text style={styles.formLabel}>Date and Time</Text>
           <View>
-            <View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-around",
+              }}
+            >
+              <Button title="Select" />
               <Button
-                onPress={() => this.setState({ show: true })}
-                title="Select Date and Time"
+                onPress={() => this.setState({ show: true, mode: "date" })}
+                title="Date"
+              />
+              <Button
+                onPress={() => this.setState({ show: true, mode: "time" })}
+                title="Time"
               />
             </View>
             {this.state.show && (
@@ -87,15 +99,45 @@ class Reservation extends Component {
                 mode={this.state.mode}
                 is24Hour={true}
                 display="spinner"
+                onDismiss={() => {
+                  this.setState({ show: false });
+                }}
                 onChange={(event, selectedDate) => {
-                  this.setState({ date: selectedDate }, () => {
-                    this.setState({ mode: "time", show: true });
-                  });
+                  this.setState({ date: selectedDate });
                 }}
               />
             )}
           </View>
         </View>
+        <Modal
+          animationType={"slide"}
+          transparent={false}
+          visible={this.state.showModal}
+          onDismiss={() => this.toggleModal()}
+          onRequestClose={() => this.toggleModal()}
+        >
+          <View style={styles.modal}>
+            <Text style={styles.modalTitle}>Your Reservation</Text>
+            <Text style={styles.modalText}>
+              Number of Guests: {this.state.guests}
+            </Text>
+            <Text style={styles.modalText}>
+              Smoking?: {this.state.smoking ? "Yes" : "No"}
+            </Text>
+            <Text style={styles.modalText}>
+              Date and Time: {JSON.stringify(this.state.date)}
+            </Text>
+
+            <Button
+              onPress={() => {
+                this.toggleModal();
+                this.resetForm();
+              }}
+              color="#512DA8"
+              title="Close"
+            />
+          </View>
+        </Modal>
         <View style={styles.formRow}>
           <Button
             onPress={() => this.handleReservation()}
@@ -123,6 +165,22 @@ const styles = StyleSheet.create({
   },
   formItem: {
     flex: 1,
+  },
+  modal: {
+    justifyContent: "center",
+    margin: 20,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    backgroundColor: "#512DA8",
+    textAlign: "center",
+    color: "white",
+    marginBottom: 20,
+  },
+  modalText: {
+    fontSize: 18,
+    margin: 10,
   },
 });
 
