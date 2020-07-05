@@ -28,6 +28,7 @@ import {
   fetchLeaders,
 } from "../redux/ActionCreators";
 import Reservation from "./ReservationComponent";
+import Favorites from "./FavoriteComponent";
 
 const mapStateToProps = (state) => {
   return {
@@ -188,6 +189,40 @@ function StackNavContact() {
     </Stack.Navigator>
   );
 }
+function StackNavFav() {
+  const Stack = createStackNavigator();
+  return (
+    <Stack.Navigator
+      initialRouteName="Favorites"
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: "#512DA8",
+        },
+        headerTintColor: "#fff",
+        headerTitleStyle: {
+          color: "#fff",
+        },
+      }}
+    >
+      <Stack.Screen
+        name="Favorites"
+        component={Favorites}
+        options={({ navigation }) => ({
+          headerLeft: () => (
+            <Icon
+              raised
+              reverse
+              name="menu"
+              size={24}
+              color="#512DA8"
+              onPress={() => navigation.toggleDrawer()}
+            />
+          ),
+        })}
+      />
+    </Stack.Navigator>
+  );
+}
 function StackNavReserve() {
   const Stack = createStackNavigator();
   return (
@@ -282,6 +317,22 @@ function DrawerNav() {
               name="address-card"
               type="font-awesome"
               size={22}
+              color={tintColor}
+            />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Favorites"
+        component={StackNavFav}
+        options={{
+          title: "Favorites",
+          drawerLabel: "Favorites",
+          drawerIcon: ({ tintColor, focused }) => (
+            <Icon
+              name="heart"
+              type="font-awesome"
+              size={24}
               color={tintColor}
             />
           ),
