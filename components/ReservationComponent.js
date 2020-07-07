@@ -8,8 +8,10 @@ import {
   Switch,
   Button,
   Modal,
+  Alert,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import * as Animatable from "react-native-animatable";
 
 class Reservation extends Component {
   constructor(props) {
@@ -20,16 +22,35 @@ class Reservation extends Component {
       smoking: false,
       date: new Date(),
       show: false,
-      showModal: false,
     };
-  }
-  toggleModal() {
-    this.setState({ showModal: !this.state.showModal });
   }
 
   handleReservation() {
-    console.log(JSON.stringify(this.state));
-    this.toggleModal();
+    Alert.alert(
+      "Your Reservation Ok?",
+      "Number of Guests : " +
+        this.state.guests +
+        "\nSmoking? " +
+        this.state.smoking +
+        "\nDate and Time : " +
+        this.state.date,
+      [
+        {
+          text: "Cancel",
+          onPress: () => {
+            this.resetForm();
+          },
+          style: " cancel",
+        },
+        {
+          text: "Ok",
+          text: "OK",
+          onPress: () => {
+            this.resetForm();
+          },
+        },
+      ]
+    );
     this.setState({
       show: false,
     });
@@ -47,105 +68,78 @@ class Reservation extends Component {
     const { date } = this.state;
     return (
       <ScrollView>
-        <View style={styles.formRow}>
-          <Text style={styles.formLabel}>Number of Guests</Text>
-          <Picker
-            style={styles.formItem}
-            selectedValue={this.state.guests}
-            onValueChange={(itemValue, itemIndex) =>
-              this.setState({ guests: itemValue })
-            }
-          >
-            <Picker.Item label="1" value="1" />
-            <Picker.Item label="2" value="2" />
-            <Picker.Item label="3" value="3" />
-            <Picker.Item label="4" value="4" />
-            <Picker.Item label="5" value="5" />
-            <Picker.Item label="6" value="6" />
-          </Picker>
-        </View>
-        <View style={styles.formRow}>
-          <Text style={styles.formLabel}>Smoking/Non-Smoking?</Text>
-          <Switch
-            style={styles.formItem}
-            value={this.state.smoking}
-            trackColor="#512DA8"
-            onValueChange={(value) => this.setState({ smoking: value })}
-          ></Switch>
-        </View>
-        <View style={styles.formRow}>
-          <Text style={styles.formLabel}>Date and Time</Text>
-          <View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-around",
-              }}
+        <Animatable.View animation="zoomIn" duration={1000}>
+          <View style={styles.formRow}>
+            <Text style={styles.formLabel}>Number of Guests</Text>
+            <Picker
+              style={styles.formItem}
+              selectedValue={this.state.guests}
+              onValueChange={(itemValue, itemIndex) =>
+                this.setState({ guests: itemValue })
+              }
             >
-              <Button title="Select" />
-              <Button
-                onPress={() => this.setState({ show: true, mode: "date" })}
-                title="Date"
-              />
-              <Button
-                onPress={() => this.setState({ show: true, mode: "time" })}
-                title="Time"
-              />
-            </View>
-            {this.state.show && (
-              <DateTimePicker
-                testID="dateTimePicker"
-                value={this.state.date}
-                mode={this.state.mode}
-                is24Hour={true}
-                display="spinner"
-                onDismiss={() => {
-                  this.setState({ show: false });
-                }}
-                onChange={(event, selectedDate) => {
-                  this.setState({ date: selectedDate });
-                }}
-              />
-            )}
+              <Picker.Item label="1" value="1" />
+              <Picker.Item label="2" value="2" />
+              <Picker.Item label="3" value="3" />
+              <Picker.Item label="4" value="4" />
+              <Picker.Item label="5" value="5" />
+              <Picker.Item label="6" value="6" />
+            </Picker>
           </View>
-        </View>
-        <Modal
-          animationType={"slide"}
-          transparent={false}
-          visible={this.state.showModal}
-          onDismiss={() => this.toggleModal()}
-          onRequestClose={() => this.toggleModal()}
-        >
-          <View style={styles.modal}>
-            <Text style={styles.modalTitle}>Your Reservation</Text>
-            <Text style={styles.modalText}>
-              Number of Guests: {this.state.guests}
-            </Text>
-            <Text style={styles.modalText}>
-              Smoking?: {this.state.smoking ? "Yes" : "No"}
-            </Text>
-            <Text style={styles.modalText}>
-              Date and Time: {JSON.stringify(this.state.date)}
-            </Text>
-
+          <View style={styles.formRow}>
+            <Text style={styles.formLabel}>Smoking/Non-Smoking?</Text>
+            <Switch
+              style={styles.formItem}
+              value={this.state.smoking}
+              trackColor="#512DA8"
+              onValueChange={(value) => this.setState({ smoking: value })}
+            ></Switch>
+          </View>
+          <View style={styles.formRow}>
+            <Text style={styles.formLabel}>Date and Time</Text>
+            <View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                }}
+              >
+                <Button title="Select" />
+                <Button
+                  onPress={() => this.setState({ show: true, mode: "date" })}
+                  title="Date"
+                />
+                <Button
+                  onPress={() => this.setState({ show: true, mode: "time" })}
+                  title="Time"
+                />
+              </View>
+              {this.state.show && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={this.state.date}
+                  mode={this.state.mode}
+                  is24Hour={true}
+                  display="spinner"
+                  onDismiss={() => {
+                    this.setState({ show: false });
+                  }}
+                  onChange={(event, selectedDate) => {
+                    this.setState({ date: selectedDate });
+                  }}
+                />
+              )}
+            </View>
+          </View>
+          <View style={styles.formRow}>
             <Button
-              onPress={() => {
-                this.toggleModal();
-                this.resetForm();
-              }}
+              onPress={() => this.handleReservation()}
+              title="Reserve"
               color="#512DA8"
-              title="Close"
+              accessibilityLabel="Learn more about this purple button"
             />
           </View>
-        </Modal>
-        <View style={styles.formRow}>
-          <Button
-            onPress={() => this.handleReservation()}
-            title="Reserve"
-            color="#512DA8"
-            accessibilityLabel="Learn more about this purple button"
-          />
-        </View>
+        </Animatable.View>
       </ScrollView>
     );
   }

@@ -10,8 +10,6 @@ import {
   PanResponder,
 } from "react-native";
 import { Card, Icon, Rating, Input } from "react-native-elements";
-import { DISHES } from "../shared/dishes";
-import { COMMENTS } from "../shared/comment";
 import { connect } from "react-redux";
 import { baseUrl } from "../shared/baseUrl";
 import { postFavorite, postComment } from "../redux/ActionCreators";
@@ -39,6 +37,10 @@ function RenderDish(props) {
     if (dx < -200) return true;
     else return false;
   };
+  const recognizeComment = ({ dx }) => {
+    if (dx > 200) return true;
+    else return false;
+  };
   const panRendponer = PanResponder.create({
     onStartShouldSetPanResponder: (e, gestureState) => {
       return true;
@@ -52,7 +54,7 @@ function RenderDish(props) {
     },
     onPanResponderEnd: (e, gestureState) => {
       console.log("pan responder end", gestureState);
-      if (recognizeDrag(gestureState))
+      if (recognizeDrag(gestureState)) {
         Alert.alert(
           "Add Favorite",
           "Are you sure you wish to add " + dish.name + " to favorite?",
@@ -73,7 +75,9 @@ function RenderDish(props) {
           ],
           { cancelable: false }
         );
-
+      } else if (recognizeComment(gestureState)) {
+        props.toggleModal();
+      }
       return true;
     },
   });
