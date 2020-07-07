@@ -29,6 +29,7 @@ import {
 } from "../redux/ActionCreators";
 import Reservation from "./ReservationComponent";
 import Favorites from "./FavoriteComponent";
+import Login from "./LoginComponent";
 
 const mapStateToProps = (state) => {
   return {
@@ -105,6 +106,39 @@ function StackNavHome() {
       <Stack.Screen
         name="Home"
         component={Home}
+        options={({ navigation }) => ({
+          headerLeft: () => (
+            <Icon
+              raised
+              reverse
+              name="menu"
+              size={24}
+              color="#512DA8"
+              onPress={() => navigation.toggleDrawer()}
+            />
+          ),
+        })}
+      />
+    </Stack.Navigator>
+  );
+}
+function StackNavLogin() {
+  const Stack = createStackNavigator();
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: "#512DA8",
+        },
+        headerTintColor: "#fff",
+        headerTitleStyle: {
+          color: "#fff",
+        },
+      }}
+    >
+      <Stack.Screen
+        name="Login"
+        component={Login}
         options={({ navigation }) => ({
           headerLeft: () => (
             <Icon
@@ -268,6 +302,22 @@ function DrawerNav() {
       }}
       drawerContent={(props) => <CustomDrawerContentComponent {...props} />}
     >
+      <Drawer.Screen
+        name="Login"
+        component={StackNavLogin}
+        options={{
+          title: "Login",
+          drawerLabel: "Login",
+          drawerIcon: ({ tintColor, focused }) => (
+            <Icon
+              name="sign-in"
+              type="font-awesome"
+              size={24}
+              color={tintColor}
+            />
+          ),
+        }}
+      />
       <Drawer.Screen
         name="Home"
         component={StackNavHome}
