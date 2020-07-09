@@ -2,10 +2,12 @@ import React, { Component } from "react";
 import {
   View,
   Platform,
-  StyleSheet,
-  Image,
   Text,
+  ScrollView,
+  Image,
   SafeAreaView,
+  StyleSheet,
+  ToastAndroid,
 } from "react-native";
 import Menu from "./MenuComponent";
 import Home from "./HomeComponent";
@@ -30,6 +32,7 @@ import {
 import Reservation from "./ReservationComponent";
 import Favorites from "./FavoriteComponent";
 import Login from "./LoginComponent";
+import NetInfo from "@react-native-community/netinfo";
 
 const mapStateToProps = (state) => {
   return {
@@ -437,8 +440,45 @@ class Main extends Component {
     this.props.fetchComments();
     this.props.fetchPromos();
     this.props.fetchLeaders();
+    NetInfo.fetch().then((state) => {
+      ToastAndroid.show(
+        "Initial Network Connectivity Type: " +
+          state.type +
+          ", effectiveType: " +
+          state.effectiveType,
+        ToastAndroid.LONG
+      );
+    });
+
+    NetInfo.addEventListener((state) => {
+      this.handleConnectivityChange(state);
+    });
   }
 
+  handleConnectivityChange = (state) => {
+    switch (state.type) {
+      case "none":
+        ToastAndroid.show("You are now offline!", ToastAndroid.LONG);
+        break;
+      case "wifi":
+        ToastAndroid.show("You are now connected to WiFi!", ToastAndroid.LONG);
+        break;
+      case "cellular":
+        ToastAndroid.show(
+          "You are now connected to Cellular!",
+          ToastAndroid.LONG
+        );
+        break;
+      case "unknown":
+        ToastAndroid.show(
+          "You now have unknown connection!",
+          ToastAndroid.LONG
+        );
+        break;
+      default:
+        break;
+    }
+  };
   render() {
     return (
       <View
