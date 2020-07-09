@@ -8,7 +8,6 @@ import { baseUrl } from "../shared/baseUrl";
 import * as SecureStore from "expo-secure-store";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
-import { Asset } from "expo-asset";
 
 class LoginTab extends Component {
   constructor(props) {
@@ -169,7 +168,30 @@ class RegisterTab extends Component {
     console.log(processedImage);
     this.setState({ imageUrl: processedImage.uri });
   };
+  getPermissionAsync = async () => {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (status !== "granted") {
+      alert("Sorry, we need camera roll permissions to make this work!");
+    }
+  };
 
+  getImageFromGallery = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+      if (!result.cancelled) {
+        this.processImage(result.uri);
+      }
+
+      console.log(result);
+    } catch (E) {
+      console.log(E);
+    }
+  };
   static navigationOptions = {
     title: "Register",
     tabBarIcon: ({ tintColor, focused }) => (
@@ -193,7 +215,9 @@ class RegisterTab extends Component {
         })
       ).catch((error) => console.log("Could not save user info", error));
   }
-
+  componentDidMount() {
+    this.getPermissionAsync();
+  }
   render() {
     return (
       <ScrollView>
@@ -205,6 +229,7 @@ class RegisterTab extends Component {
               style={styles.image}
             />
             <Button title="Camera" onPress={this.getImageFromCamera} />
+            <Button title="Gallery" onPress={this.getImageFromGallery} />
           </View>
           <Input
             placeholder="Username"
@@ -279,6 +304,8 @@ const styles = StyleSheet.create({
   imageContainer: {
     flex: 1,
     flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "baseline",
     margin: 20,
   },
   image: {
